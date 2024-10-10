@@ -12,9 +12,12 @@ class pictures(commands.Cog, name="pictures"):
     async def dog(self, ctx: commands.Context) -> None:
         await ctx.defer()
         url = "https://dog.ceo/api/breeds/image/random"
-        response = requests.get(url=url).json()
-        
-        await ctx.send(response['message'])
+        try:
+            response = requests.get(url=url).json()
+        except:
+            await ctx.send('Failed to retrieve an image.')
+        else:
+            await ctx.send(response['message'])
         
     @commands.hybrid_command(name="animepics", description="random anime pictures")
     @app_commands.rename(count="count")
@@ -28,17 +31,21 @@ class pictures(commands.Cog, name="pictures"):
                 "rating": "safe",
             }
 
-            res = requests.get("https://api.nekosapi.com/v3/images/random", params=params)
-            res.raise_for_status()
-            
-            data = res.json()
-            
-            edict = {}
-            for i in range(len(data['items'])):
+            try:
+                res = requests.get("https://api.nekosapi.com/v3/images/random", params=params)
+            except:
+                await ctx.send('Failed to retrieve an image.')
+            else:
+                res.raise_for_status()
                 
-                edict[i] = discord.Embed(url="https://nekosapi.com/").set_image(url=data['items'][i]['image_url'])
+                data = res.json()
+                
+                edict = {}
+                for i in range(len(data['items'])):
+                    
+                    edict[i] = discord.Embed(url="https://nekosapi.com/").set_image(url=data['items'][i]['image_url'])
 
-            await ctx.send(embeds=[i for i in edict.values()])
+                await ctx.send(embeds=[i for i in edict.values()])
 
 async def setup(bot) -> None:
     await bot.add_cog(pictures(bot))
