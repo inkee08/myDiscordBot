@@ -1,0 +1,5 @@
+services:
+  dbot:
+    image: dbot
+    container_name: dbot
+    restart: unless-stopped
