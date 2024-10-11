@@ -17,7 +17,7 @@ class jokes(commands.Cog, name="jokes"):
         response = requests.get(url, headers=headers)
 
         if response.status_code == 200:
-            await ctx.send(response.content.decode())
+            await ctx.send(response.text)
         else:
             await ctx.send("Could not find a joke. Please try again.")
 
