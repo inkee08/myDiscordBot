@@ -38,5 +38,11 @@ class jokes(commands.Cog, name="jokes"):
         else:
             await ctx.send("Could not find a joke. Please try again.")
 
+    async def cog_command_error(self, ctx: commands.Context, error):
+        if isinstance(error, commands.errors.HybridCommandError):
+            await ctx.send("An error has occurred.", reference=ctx.message)
+        else:
+            raise error  # Here we raise other errors to ensure they aren't ignored
+        
 async def setup(bot) -> None:
     await bot.add_cog(jokes(bot))

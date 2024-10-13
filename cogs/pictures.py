@@ -31,21 +31,24 @@ class pictures(commands.Cog, name="pictures"):
                 "rating": "safe",
             }
 
-            try:
-                res = requests.get("https://api.nekosapi.com/v3/images/random", params=params)
-            except:
-                await ctx.send('Failed to retrieve an image.')
-            else:
-                res.raise_for_status()
+            res = requests.get("api.nekosapi.com/v3/images/random", params=params)
+            res.raise_for_status()
+            data = res.json()
+            
+            edict = {}
+            for i in range(len(data['items'])):
                 
-                data = res.json()
-                
-                edict = {}
-                for i in range(len(data['items'])):
-                    
-                    edict[i] = discord.Embed(url="https://nekosapi.com/").set_image(url=data['items'][i]['image_url'])
+                edict[i] = discord.Embed(url="https://nekosapi.com/").set_image(url=data['items'][i]['image_url'])
 
-                await ctx.send(embeds=[i for i in edict.values()])
+            await ctx.send(embeds=[i for i in edict.values()])
+
+         
+    async def cog_command_error(self, ctx: commands.Context, error):
+        if isinstance(error, commands.errors.HybridCommandError):
+            await ctx.send("Failed to retrieve an image.", reference=ctx.message)
+        else:
+            raise error  # Here we raise other errors to ensure they aren't ignored
+        
 
 async def setup(bot) -> None:
     await bot.add_cog(pictures(bot))

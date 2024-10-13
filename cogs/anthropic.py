@@ -43,6 +43,11 @@ class askai(commands.Cog, name="askai"):
         else:
             await ctx.send(f"AI Response:\n{message.content[0].text}", ephemeral=True)
         
+    async def cog_command_error(self, ctx: commands.Context, error):
+        if isinstance(error, commands.errors.HybridCommandError):
+            await ctx.send("An error has occurred.", reference=ctx.message)
+        else:
+            raise error  # Here we raise other errors to ensure they aren't ignored
         
 
 async def setup(bot) -> None:

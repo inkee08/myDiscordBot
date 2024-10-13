@@ -102,5 +102,11 @@ class pokedex(commands.Cog, name="pokedex"):
         else:
             await ctx.send("Could not find information. Please try again.", ephemeral=True)
 
+    async def cog_command_error(self, ctx: commands.Context, error):
+        if isinstance(error, commands.errors.HybridCommandError):
+            await ctx.send("An error has occurred.", reference=ctx.message)
+        else:
+            raise error  # Here we raise other errors to ensure they aren't ignored
+        
 async def setup(bot) -> None:
     await bot.add_cog(pokedex(bot))
